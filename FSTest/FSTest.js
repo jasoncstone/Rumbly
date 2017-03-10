@@ -5,12 +5,13 @@ var request;
 
 var results = [];
 
+
 function setup() {
   createCanvas(1024,1024);
   request = {
     //ll:{lat:41.878114, lon:-87.629798},
-    radius:10000,
-    query: "coffee"
+    radius:100,
+    query: "food"
   };
     
     //response.groups[i].venue => {ID, Name, Contact, Location,
@@ -33,7 +34,7 @@ function draw() {
 
 function fetchFSData(position){
   console.log(position); 
-  var url = "https://api.foursquare.com/v2/venues/search?"
+  var url = "https://api.foursquare.com/v2/venues/explore?"
              + "query=" + request.query 
              + "&ll=" + position.latitude + "%2C%20" + position.longitude
              + "&radius=" + request.radius
@@ -42,9 +43,10 @@ function fetchFSData(position){
              + "&v=" + VERSION;
    loadJSON(url, function(response){
      console.log(url);
-     for(var i=0; i< response["response"]["venues"].length; i++){
-       if(request.radius >= response["response"]["venues"][i].location.distance){
-          results.push(response.response.venues[i].name + ": " + response.response.venues[i].location.distance);
+     for(var i=0; i< response["response"]["groups"][0]["items"].length; i++){
+       var venue = response["response"]["groups"][0]["items"][i]["venue"];
+       if(request.radius >= venue.location.distance){
+          results.push(venue.name + ": " + venue.location.distance);
           draw(); //force a draw after each item //
        }
      }
